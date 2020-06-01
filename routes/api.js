@@ -16,9 +16,19 @@ function asyncHandler(cb) {
 }
 
 // Returns the currently authenticated user
-router.get('/users',asyncHandler(async(req,res) =>{
+router.get('/users',asyncHandler(async(req,res,next) =>{
 
-  res.status(200);
+  try{
+    let user = await User.findByPk(req.params.id);
+  }catch(error){
+    throw error
+  }
+
+  if(!user){
+
+  }
+
+  res.status(200).end();
 }));
 
 
@@ -53,3 +63,6 @@ router.delete('courses/:id',asyncHandler(async(req,res)=>{
 
   res.status(204);
 }));
+
+
+module.exports = router;
