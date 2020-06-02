@@ -4,6 +4,10 @@ module.exports = (sequelize) => {
   class Course extends Sequelize.Model {}
   Course.init(
     {
+       userId:{
+        type:Sequelize.INTEGER,
+        allowNull:false
+      },
       title: {
         type: Sequelize.STRING,
         allowNull: false,
@@ -25,7 +29,7 @@ module.exports = (sequelize) => {
     },
     { sequelize });
   Course.associate = (models) => {
-    Course.belongsTo(models.User, {foreignKey:'userId'});
+    Course.belongsTo(models.User, {foreignKey:{fieldName:'userId',allowNull:false}});
   };
 
   return Course;
