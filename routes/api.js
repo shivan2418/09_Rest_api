@@ -111,6 +111,10 @@ check('password')
          res.status(400).json({errors:errors.errors.map(e =>e.msg)}).end();
        }
 
+      
+    // Hash the password
+    req.body.password = bcryptjs.hashSync(req.body.password);
+
 
     let newUser = await User.create(req.body);
     res.location('/');}
@@ -166,12 +170,10 @@ check('description')
        }
    
   
-  
-  
   try{
       req.body.userId = req.currentUser.id;
 
-      let course = Course.create(req.body);
+      let course = await Course.create(req.body);
       res.location(`/courses/${course.id}`);
       res.status(201).end();
 
