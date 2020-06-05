@@ -86,20 +86,10 @@ router.get("/users",authenticateUser, asyncHandler(async (req, res) => {
 );
 
 // Creates a user, sets the Location header to "/", and returns no content
-router.post('/users',[
-  
-  check('firstName')
-.exists({ checkNull: true, checkFalsy: true })
-.withMessage('Please provide a value for "firstName"')
-,
-check('lastName')
-.exists({ checkNull: true, checkFalsy: true })
-.withMessage('Please provide a value for "lastName"'),
-check('emailAddress')
-.exists({ checkNull: true, checkFalsy: true })
-.withMessage('Please provide a value for "emailAddress"'),
-check('password')
-.exists({ checkNull: true, checkFalsy: true })
+router.post('/users',[check('firstName').exists({ checkNull: true, checkFalsy: true }).withMessage('Please provide a value for "firstName"'),
+check('lastName').exists({ checkNull: true, checkFalsy: true }).withMessage('Please provide a value for "lastName"'),
+check('emailAddress').exists({ checkNull: true, checkFalsy: true }).withMessage('Please provide a value for "emailAddress"'),
+check('password').exists({ checkNull: true, checkFalsy: true })
 .withMessage('Please provide a value for "password"')
 ],  asyncHandler(async (req, res) => {
 
@@ -115,10 +105,19 @@ check('password')
     // Hash the password
     req.body.password = bcryptjs.hashSync(req.body.password);
 
-
+    try{
     let newUser = await User.create(req.body);
-    res.location('/');}
-    ));
+    res.location('/');
+    res.status(201).end()
+    }catch(error){
+      if (error.name==="SequelizeUniqueConstraintError"){
+        error.message = 'The email already exists';
+        res.status(400).json({"error":error.message});
+      }
+    }
+  
+  
+  }));
 
 // COURSES
 
